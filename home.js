@@ -46,12 +46,12 @@ setInterval(imgSlide, 4000)
 
 // body
 function renderAllProducts() {
-    fetch("https://fakestoreapi.com/products")
+    fetch("./product.json")
         .then(res => res.json())
         .then(apiProducts => {
-   
+
             const localProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
-        
+
             const mappedLocal = localProducts.map((p, idx) => ({
                 id: 'local-' + idx,
                 image: p.image,
@@ -72,9 +72,9 @@ function renderAllProducts() {
               `;
                 container.innerHTML += item;
             });
-      
+
             document.querySelectorAll('.add-to-cart').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     let product;
                     if (id.startsWith('local-')) {
@@ -102,7 +102,7 @@ renderAllProducts();
 
 const cartIcon = document.querySelector('.cart-icon');
 if (cartIcon) {
-    cartIcon.addEventListener('click', function() {
+    cartIcon.addEventListener('click', function () {
         window.location.href = 'cart.html';
     });
 }
