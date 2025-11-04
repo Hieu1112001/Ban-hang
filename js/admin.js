@@ -18,15 +18,8 @@ const firebaseConfig = {
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getFirestore,
-  updateDoc,
-} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc, updateDoc, addDoc } 
+from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-storage.js";
 
 const app = initializeApp(firebaseConfig);
@@ -79,6 +72,7 @@ document.getElementById("add-product-form").onsubmit = async function (e) {
   e.preventDefault();
   const name = document.getElementById("productName").value.trim();
   const price = parseFloat(document.getElementById("productPrice").value);
+  const category = document.getElementById("productCategory").value;
   const file = document.getElementById("productImage").files[0];
 
   if (!file) {
@@ -98,6 +92,7 @@ document.getElementById("add-product-form").onsubmit = async function (e) {
     await saveProduct({
       name,
       price,
+      category,
       image: imageUrl,
       createdAt: new Date(),
     });
@@ -115,177 +110,213 @@ document.getElementById("add-product-form").onsubmit = async function (e) {
   }
 };
 
-// Delete product from Firestore
+// Hàm xóa sản phẩm
 async function deleteProduct(productId) {
-  try {
-    await deleteDoc(doc(db, "products", productId));
-    showToast("toastSuccess", "Xoá thành công!");
-  } catch (e) {
-    console.error("Error deleting product: ", e);
-    throw e;
-  }
+    try {
+        await deleteDoc(doc(db, "products", productId));
+        showToast('toastSuccess', 'Xóa sản phẩm thành công!');
+        renderProducts(); // Render lại danh sách
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        showToast('toastError', 'Lỗi khi xóa sản phẩm!');
+    }
 }
 
-// Update product in Firestore
-async function updateProduct(productId, data) {
-  try {
-    await updateDoc(doc(db, "products", productId), data);
-  } catch (e) {
-    console.error("Error updating product: ", e);
-    throw e;
-  }
+// Hàm cập nhật sản phẩm
+async function updateProduct(productId, updateData) {
+    try {
+        await updateDoc(doc(db, "products", productId), updateData);
+        showToast('toastSuccess', 'Cập nhật sản phẩm thành công!');
+        renderProducts(); // Render lại danh sách
+    } catch (error) {
+        console.error("Error updating product:", error);
+        showToast('toastError', 'Lỗi khi cập nhật sản phẩm!');
+    }
 }
 
-// Render products
-async function renderProducts(filter = "") {
-  const products = await getProducts();
-  const tbody = document.querySelector("#product-table tbody");
-  let filtered = products;
-  if (filter) {
-    filtered = products.filter((p) =>
-      p.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  }
+// Xử lý sự kiện click nút Xóa
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-product')) {
+        const productId = e.target.dataset.id;
+        if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+            deleteProduct(productId);
+        }
+    }
+});
 
-  tbody.innerHTML = filtered
-    .map(
-      (p, i) => `
-            <tr>
-                <td>${i + 1}</td>
-                <td><img src="${
-                  p.image
-                }" style="height:50px;object-fit:contain"></td>
-                <td>${p.name}</td>
-                <td>${p.price.toLocaleString()}₫</td>
-                <td>
-                    <button class="btn btn-primary btn-sm edit-product" data-id="${
-                      p.id
-                    }">Sửa</button>
-                    <button class="btn btn-danger btn-sm delete-product" data-id="${
-                      p.id
-                    }">Xóa</button>
-                </td>
-            </tr>
-        `
-    )
-    .join("");
+// Xử lý sự kiện click nút Sửa
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('edit-product')) {
+        const productId = e.target.dataset.id;
+        const product = {
+            name: e.target.dataset.name,
+            price: e.target.dataset.price,
+            category: e.target.dataset.category,
+            image: e.target.dataset.image
+        };
+        
+        // Điền thông tin vào form
+        document.getElementById('editProductId').value = productId;
+        document.getElementById('editProductName').value = product.name;
+        document.getElementById('editProductPrice').value = product.price;
+        document.getElementById('editProductCategory').value = product.category || 'nu';
+        document.getElementById('currentImage').src = product.image;
+        
+        // Hiện modal
+        const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+        modal.show();
+    }
+});
 
-  // Delete handler
-  document.querySelectorAll(".delete-product").forEach((btn) => {
-    btn.onclick = async function () {
-      if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
-        await deleteProduct(this.dataset.id);
-        renderProducts();
-      }
+// Xử lý sự kiện Submit form sửa
+document.getElementById('saveEditBtn').onclick = async function() {
+    const productId = document.getElementById('editProductId').value;
+    const updateData = {
+        name: document.getElementById('editProductName').value.trim(),
+        price: parseFloat(document.getElementById('editProductPrice').value),
+        category: document.getElementById('editProductCategory').value
     };
-  });
 
-  // Edit handler
-  document.querySelectorAll(".edit-product").forEach((btn) => {
-    btn.onclick = async function () {
-      const product = filtered.find((p) => p.id === this.dataset.id);
-      document.getElementById("editProductId").value = product.id;
-      document.getElementById("editProductName").value = product.name;
-      document.getElementById("editProductPrice").value = product.price;
-      const modal = new bootstrap.Modal(
-        document.getElementById("editProductModal")
-      );
-      modal.show();
-    };
-  });
-}
+    const imageFile = document.getElementById('editProductImage').files[0];
+    
+    try {
+        if (imageFile) {
+            // Nếu có ảnh mới, upload ảnh
+            const imageUrl = await uploadImage(imageFile);
+            updateData.image = imageUrl;
+        }
 
-// Edit product form handler
-// document.getElementById('edit-product-form')?.onsubmit = async function(e) {
-//     e.preventDefault();
-//     const id = document.getElementById('editProductId').value;
-//     const name = document.getElementById('editProductName').value.trim();
-//     const price = parseFloat(document.getElementById('editProductPrice').value);
-//     const file = document.getElementById('editProductImage').files[0];
-
-//     try {
-//         const updateData = { name, price };
-
-//         if (file) {
-//             const storageRef = ref(storage, 'products/' + file.name);
-//             const snapshot = await uploadBytes(storageRef, file);
-//             updateData.image = await getDownloadURL(snapshot.ref);
-//         }
-
-//         await updateProduct(id, updateData);
-//         alert('Cập nhật sản phẩm thành công!');
-//         bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
-//         renderProducts();
-//     } catch (e) {
-//         console.error("Error: ", e);
-//         alert('Có lỗi xảy ra khi cập nhật sản phẩm!');
-//     }
-// };
+        await updateProduct(productId, updateData);
+        bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
+    } catch (error) {
+        console.error("Error:", error);
+        showToast('toastError', 'Lỗi khi cập nhật sản phẩm!');
+    }
+};
 
 // Thêm ImageKit configuration
 
 // Sửa lại hàm uploadImage để dùng ImageKit
 
+// Thêm hàm format ngày
+function formatDate(date) {
+    if (!date) return 'N/A';
+    
+    let d;
+    
+    // Kiểm tra nếu là Firestore Timestamp
+    if (date.seconds) {
+        // Chuyển Firestore Timestamp sang Date
+        d = new Date(date.seconds * 1000);
+    } else if (date instanceof Date) {
+        d = date;
+    } else {
+        // Thử parse string hoặc số
+        d = new Date(date);
+    }
+    
+    if (isNaN(d.getTime())) return 'N/A';
+    
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear());
+    
+    return `${day}/${month}/${year}`;
+}
+
+// Cập nhật hàm renderOrders
 export async function renderOrders() {
-  const orders = await getOrders();
-  const tbody = document.querySelector("#order-table tbody");
+    const orders = await getOrders();
+    const tbody = document.querySelector("#order-table tbody");
 
-  if (!orders.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="text-center">Chưa có đơn hàng</td></tr>`;
-    return;
-  }
+    if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center">Chưa có đơn hàng</td></tr>`;
+        return;
+    }
 
-  tbody.innerHTML = "";
-  orders.forEach((order, i) => {
-    const products = order.products || [];
-    if (products.length === 0) return;
-
-    const rowspan = products.length; // số dòng để gộp
-
-    products.forEach((item, index) => {
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-      ${index === 0 ? `<td rowspan="${rowspan}">${i + 1}</td>` : ""}
-      ${
-        index === 0
-          ? `<td rowspan="${rowspan}">${order.customerName || ""}</td>`
-          : ""
-      }
-      ${
-        index === 0
-          ? `<td rowspan="${rowspan}">${order.phoneNumber || ""}</td>`
-          : ""
-      }
-      ${
-        index === 0
-          ? `<td rowspan="${rowspan}">${order.shippingAddress || ""}</td>`
-          : ""
-      }
-      ${
-        index === 0
-          ? `<td rowspan="${rowspan}">${order.paymentMethod || "Tiền mặt"}</td>`
-          : ""
-      }
-      <td>${item.name} x${item.quantity}</td>
-      <td>${(item.price * item.quantity).toLocaleString()}₫</td>
-    `;
-
-      tbody.appendChild(tr);
+    // Sắp xếp đơn hàng theo ngày từ mới đến cũ
+    const sortedOrders = orders.sort((a, b) => {
+        const dateA = a.createdAt?.seconds || a.orderDate?.seconds || 0;
+        const dateB = b.createdAt?.seconds || b.orderDate?.seconds || 0;
+        return dateB - dateA; // Đảo ngược để từ mới đến cũ
     });
 
-    // Dòng tổng tiền (có thể gộp cả cột sản phẩm)
-    const total = products.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    const trTotal = document.createElement("tr");
-    trTotal.innerHTML = `
-    <td colspan="6" class="text-end fw-bold">Tổng</td>
-    <td class="fw-bold">${total.toLocaleString()}₫</td>
-  `;
-    tbody.appendChild(trTotal);
-  });
+    tbody.innerHTML = "";
+    sortedOrders.forEach((order, i) => {
+        const products = order.products || [];
+        if (products.length === 0) return;
+
+        const rowspan = products.length;
+        
+        // Format ngày theo dd/mm/yyyy
+        const orderDate = formatDate(order.createdAt || order.orderDate);
+
+        products.forEach((item, index) => {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                ${index === 0 ? `<td rowspan="${rowspan}">${i + 1}</td>` : ""}
+                ${index === 0 ? `<td rowspan="${rowspan}">${orderDate}</td>` : ""}
+                ${index === 0 ? `<td rowspan="${rowspan}">${order.customerName || ""}</td>` : ""}
+                ${index === 0 ? `<td rowspan="${rowspan}">${order.phoneNumber || ""}</td>` : ""}
+                ${index === 0 ? `<td rowspan="${rowspan}">${order.shippingAddress || ""}</td>` : ""}
+                ${index === 0 ? `<td rowspan="${rowspan}">${order.paymentMethod || "Tiền mặt"}</td>` : ""}
+                <td>${item.name} x${item.quantity}</td>
+                <td>${(item.price * item.quantity).toLocaleString()}₫</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+
+        const total = products.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+        const trTotal = document.createElement("tr");
+        trTotal.innerHTML = `
+            <td colspan="7" class="text-end fw-bold">Tổng</td>
+            <td class="fw-bold">${total.toLocaleString()}₫</td>
+        `;
+        tbody.appendChild(trTotal);
+    });
+}
+
+async function renderProducts() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const tbody = document.querySelector('#product-table tbody');
+        tbody.innerHTML = '';
+        
+        querySnapshot.forEach((doc, index) => {
+            const product = doc.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><img src="${product.image}" style="height:50px;object-fit:contain"></td>
+                    <td>${product.name}</td>
+                    <td>${product.price.toLocaleString()}₫</td>
+                    <td>${product.category || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm edit-product" 
+                            data-id="${doc.id}"
+                            data-name="${product.name}"
+                            data-price="${product.price}"
+                            data-category="${product.category || 'nu'}"
+                            data-image="${product.image}">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-product" 
+                            data-id="${doc.id}">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (error) {
+        console.error("Error getting products:", error);
+        showToast('toastError', 'Lỗi khi tải danh sách sản phẩm!');
+    }
 }
 
 renderProducts();
