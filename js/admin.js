@@ -230,7 +230,7 @@ export async function renderOrders() {
     const tbody = document.querySelector("#order-table tbody");
 
     if (!orders.length) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center">Chưa có đơn hàng</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center">Chưa có đơn hàng</td></tr>`;
         return;
     }
 
@@ -255,7 +255,6 @@ export async function renderOrders() {
             const tr = document.createElement("tr");
 
             tr.innerHTML = `
-                ${index === 0 ? `<td rowspan="${rowspan}">${i + 1}</td>` : ""}
                 ${index === 0 ? `<td rowspan="${rowspan}">${orderDate}</td>` : ""}
                 ${index === 0 ? `<td rowspan="${rowspan}">${order.customerName || ""}</td>` : ""}
                 ${index === 0 ? `<td rowspan="${rowspan}">${order.phoneNumber || ""}</td>` : ""}
@@ -274,7 +273,7 @@ export async function renderOrders() {
         );
         const trTotal = document.createElement("tr");
         trTotal.innerHTML = `
-            <td colspan="7" class="text-end fw-bold">Tổng</td>
+            <td colspan="6" class="text-end fw-bold">Tổng</td>
             <td class="fw-bold">${total.toLocaleString()}₫</td>
         `;
         tbody.appendChild(trTotal);
@@ -291,7 +290,6 @@ async function renderProducts() {
             const product = doc.data();
             tbody.innerHTML += `
                 <tr>
-                    <td>${index + 1}</td>
                     <td><img src="${product.image}" style="height:50px;object-fit:contain"></td>
                     <td>${product.name}</td>
                     <td>${product.price.toLocaleString()}₫</td>
