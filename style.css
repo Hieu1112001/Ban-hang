@@ -51,10 +51,12 @@ header:hover {
 .menu {
   flex: 3;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu > li {
-  padding: 0 12px;
+  padding: 0 20px;
   position: relative;
 }
 
@@ -86,7 +88,7 @@ header:hover {
 }
 
 .menu li > a {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold !important;
   display: block;
   line-height: 20px;
