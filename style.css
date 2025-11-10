@@ -42,7 +42,10 @@ header:hover {
 }
 
 .logo img {
-  padding-top: 25px;
+  padding-top: 8px;
+  width: 206px;
+  height: 76px;
+  margin-left: 30px;
 }
 
 .menu {
@@ -118,16 +121,13 @@ header:hover {
   position: relative;
 }
 .others > li:first-child input {
-  width: 100%;
+  /* width: 100%; */
   /* position: relative; */
   border: none;
   border-bottom: 1px solid #333;
   background: transparent;
   outline: none;
 }
-
-/* .others > li:first-child input::placeholder {
-} */
 
 .others > li:first-child i {
   position: absolute;
@@ -137,7 +137,7 @@ header:hover {
 /* slider */
 #Slider {
   padding-bottom: 30px;
-  border-bottom: 2px solid #000;
+  /* border-bottom: 2px solid #000; */
   overflow: hidden;
 }
 
@@ -159,8 +159,10 @@ header:hover {
   left: 0;
   /* padding-left: 50px;
   padding-right: 50px; */
-  border-radius: 20px;
-  top: 11%;
+  border-radius: 52px;
+  top: 12%;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .dot-container {
@@ -234,9 +236,6 @@ footer {
   height: 70px;
 }
 
-/* .footer-top img {
-} */
-
 .footer-top li {
   padding: 0 12px;
   position: relative;
@@ -291,7 +290,7 @@ footer {
 }
 
 .new-arrival h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -334,7 +333,7 @@ footer {
 }
 
 .tab-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -728,18 +727,117 @@ footer {
 
 /* Styling cho tabs */
 .nav-tabs {
-    border-bottom: 2px solid #dee2e6;
-    margin-bottom: 2rem;
+  border-bottom: 2px solid #dee2e6;
+  margin-bottom: 2rem;
 }
 
 .nav-tabs .nav-link {
-    margin-bottom: -2px;
-    border: none;
-    color: #495057;
-    font-weight: 500;
+  margin-bottom: -2px;
+  border: none;
+  color: #495057;
+  font-weight: 500;
 }
 
 .nav-tabs .nav-link.active {
-    color: #000;
-    border-bottom: 2px solid #000;
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+
+/* banner */
+
+.sale-section {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.sale-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.banner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.banner-img {
+  width: 600px;
+  max-width: 90%;
+  border-radius: 40px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.banner-img:hover {
+  transform: scale(1.03);
+}
+
+/* trang thông tin */
+.fashion-show {
+  padding: 60px 8%;
+  font-family: "Arial", sans-serif;
+}
+
+.fashion-title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 50px;
+}
+
+.fashion-container {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.fashion-text {
+  flex: 1;
+  max-width: 550px;
+}
+
+.fashion-text h3 {
+  font-size: 28px;
+  line-height: 1.4;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.fashion-text p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.fashion-text .date {
+  color: #666;
+}
+
+.view-more {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 16px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+
+.fashion-image {
+  flex: 1.4;
+}
+
+.fashion-image img {
+  width: 100%;
+  border-radius: 25px; /* Bo tròn 4 góc */
+  display: block;
+  object-fit: cover;
 }

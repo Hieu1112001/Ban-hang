@@ -1,148 +1,212 @@
 <!DOCTYPE html>
 <html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Giỏ hàng</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
 
-<body class="bg-light">
+  <body class="bg-light">
     <!-- Header copy from index.html -->
     <header>
-        <div class="logo">
-            <a href="index.html"><img src="./asset/img/logo.png" alt="" /></a>
-        </div>
-        <div class="menu">
+      <div class="logo">
+        <a href="index.html"><img src="./asset/img/logo (1).jpg" alt="" /></a>
+      </div>
+      <div class="menu">
+        <li>
+          <a href="">Nữ</a>
+          <ul class="sub-menu">
+            <li><a href="">Hàng mới về</a></li>
+            <li><a href="">Hưởng Dương Đón Nắng</a></li>
             <li>
-                <a href="">Nữ</a>
-                <ul class="sub-menu">
-                    <li><a href="">Hàng mới về</a></li>
-                    <li><a href="">Hưởng Dương Đón Nắng</a></li>
-                    <li>
-                        <a href="">Áo Nữ</a>
-                    </li>
-                    <li>
-                        <a href="">Váy Nữ</a>
-                    </li>
-                </ul>
+              <a href="">Áo Nữ</a>
             </li>
-            <li><a href="">Nam</a></li>
-            <li><a href="">TRẺ EM</a></li>
-            <li><a href="">SALE</a></li>
-            <li><a href="">KHẨU TRANG - BỘ BẢO HỘ</a></li>
-            <li><a href="">BỘ SƯU TẬP</a></li>
-            <li><a href="">THÔNG TIN</a></li>
-        </div>
-        <div class="others">
             <li>
-                <input placeholder="Tìm kiếm" type="text" /><i class="fas fa-search"></i>
+              <a href="">Váy Nữ</a>
             </li>
-            <li><i class="fas fa-paw" style="cursor: pointer"></i></li>
-            <li><i class="fas fa-user" style="cursor: pointer"></i></li>
-            <li><i class="fas fa-shopping-cart cart-icon" style="cursor: pointer"></i></li>
-        </div>
+          </ul>
+        </li>
+        <li><a href="">Nam</a></li>
+        <li><a href="">TRẺ EM</a></li>
+        <li><a href="">SALE</a></li>
+        <li><a href="">KHẨU TRANG - BỘ BẢO HỘ</a></li>
+        <li><a href="">BỘ SƯU TẬP</a></li>
+        <li><a href="">THÔNG TIN</a></li>
+      </div>
+      <div class="others">
+        <li>
+          <input placeholder="Tìm kiếm" type="text" /><i
+            class="fas fa-search"
+          ></i>
+        </li>
+        <li><i class="fas fa-paw" style="cursor: pointer"></i></li>
+        <li><i class="fas fa-user" style="cursor: pointer"></i></li>
+        <li>
+          <i class="fas fa-shopping-cart cart-icon" style="cursor: pointer"></i>
+        </li>
+      </div>
     </header>
-    <main class="container my-4" style="padding-top: 40px;">
-        <h1 class="h3 mb-4" style="margin-left:0; font-weight:600; color:#333;">Giỏ hàng của bạn</h1>
-        <div class="cart-list row g-3"></div>
-        <div class="cart-total my-4"></div>
-        <div class="d-flex justify-content-end mb-5">
-            <button class="btn btn-success btn-lg" id="checkout-btn">Thanh toán</button>
-        </div>
-        <!-- Modal thanh toán -->
-        <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="checkoutModalLabel">Thông tin thanh toán</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="payment-form">
-                            <div class="mb-3">
-                                <label for="customerName" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" id="customerName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="customerPhone" class="form-label">Số điện thoại</label>
-                                <input type="tel" class="form-control" id="customerPhone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="customerAddress" class="form-label">Địa chỉ nhận hàng</label>
-                                <input type="text" class="form-control" id="customerAddress" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Phương thức thanh toán</label>
-                                <select class="form-select" id="paymentMethod" required>
-                                    <option value="">-- Chọn phương thức --</option>
-                                    <option value="cod">Chuyển khoản ngân hàng</option>
-                                    <option value="credit">Thẻ tín dụng/Ghi nợ</option>
-                                    <option value="qr">QR Code</option>
-                                </select>
-                            </div>
-                            <div id="payment-extra" class="mb-3" style="display:none"></div>
-                            <button type="submit" class="btn btn-primary w-100">Xác nhận thanh toán</button>
-                        </form>
-                    </div>
-                </div>
+    <main class="container my-4" style="padding-top: 40px">
+      <h1 class="h3 mb-4" style="margin-left: 0; font-weight: 600; color: #333">
+        Giỏ hàng của bạn
+      </h1>
+      <div class="cart-list row g-3"></div>
+      <div class="cart-total my-4"></div>
+      <div class="d-flex justify-content-end mb-5">
+        <button class="btn btn-success btn-lg" id="checkout-btn">
+          Thanh toán
+        </button>
+      </div>
+      <!-- Modal thanh toán -->
+      <div
+        class="modal fade"
+        id="checkoutModal"
+        tabindex="-1"
+        aria-labelledby="checkoutModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="checkoutModalLabel">
+                Thông tin thanh toán
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
+            <div class="modal-body">
+              <form id="payment-form">
+                <div class="mb-3">
+                  <label for="customerName" class="form-label">Họ và tên</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="customerName"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="customerPhone" class="form-label"
+                    >Số điện thoại</label
+                  >
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="customerPhone"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="customerAddress" class="form-label"
+                    >Địa chỉ nhận hàng</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="customerAddress"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Phương thức thanh toán</label>
+                  <select class="form-select" id="paymentMethod" required>
+                    <option value="">-- Chọn phương thức --</option>
+                    <option value="cod">Chuyển khoản ngân hàng</option>
+                    <option value="credit">Thẻ tín dụng/Ghi nợ</option>
+                    <option value="qr">QR Code</option>
+                  </select>
+                </div>
+                <div
+                  id="payment-extra"
+                  class="mb-3"
+                  style="display: none"
+                ></div>
+                <button type="submit" class="btn btn-primary w-100">
+                  Xác nhận thanh toán
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
+      </div>
     </main>
     <!-- Footer copy from index.html -->
     <div class="footer-top">
-        <li>
-            <a href=""><img src="./asset/img/img-congthuong.png" alt="" /></a>
-        </li>
-        <li><a href="">Liên hệ</a></li>
-        <li><a href="">Tuyển dụng</a></li>
-        <li><a href="">Giới thiệu</a></li>
-        <li>
-            <a href=""><i class="fab fa-facebook"></i></a>
-            <a href=""><i class="fab fa-twitter"></i></a>
-            <a href=""><i class="fab fa-youtube"></i></a>
-        </li>
+      <li>
+        <a href=""><img src="./asset/img/img-congthuong.png" alt="" /></a>
+      </li>
+      <li><a href="">Liên hệ</a></li>
+      <li><a href="">Tuyển dụng</a></li>
+      <li><a href="">Giới thiệu</a></li>
+      <li>
+        <a href=""><i class="fab fa-facebook"></i></a>
+        <a href=""><i class="fab fa-twitter"></i></a>
+        <a href=""><i class="fab fa-youtube"></i></a>
+      </li>
     </div>
     <div class="footer-center">
-        <p>
-            Công ty cổ phần dự kim với số đăng ký kinh doanh: 0105777650 <br />
-            Địa chỉ đăng ký: Tổ dân phố Tháp, p.Đại Mỗ, Q.Nam Từ Liêm, TP.Hà Nội,
-            Việt Nam - 0243205222 <br />
-            Đặt hàng online: <b>02466623434</b>
-        </p>
+      <p>
+        Công ty cổ phần dự kim với số đăng ký kinh doanh: 0105777650 <br />
+        Địa chỉ đăng ký: Tổ dân phố Tháp, p.Đại Mỗ, Q.Nam Từ Liêm, TP.Hà Nội,
+        Việt Nam - 0243205222 <br />
+        Đặt hàng online: <b>02466623434</b>
+      </p>
     </div>
     <div class="footer-bottom">Ivymoda All rights reserved</div>
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-        <div id="toastSuccess" class="toast align-items-center text-bg-success border-0" role="alert"
-            aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Thêm sản phẩm thành công!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
-            </div>
+      <div
+        id="toastSuccess"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Thêm sản phẩm thành công!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
+      </div>
 
-        <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
-            aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Có lỗi xảy ra khi thêm sản phẩm!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
-            </div>
+      <div
+        id="toastError"
+        class="toast align-items-center text-bg-danger border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Có lỗi xảy ra khi thêm sản phẩm!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="./js/cart.js" type="module"></script>
-</body>
-
+  </body>
 </html>

@@ -1,0 +1,64 @@
+/* body */
+/* trang thông tin */
+.fashion-show {
+  padding: 130px 8%;
+  font-family: "Arial", sans-serif;
+}
+
+.fashion-title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 50px;
+}
+
+.fashion-container {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.fashion-text {
+  flex: 1;
+  max-width: 550px;
+}
+
+.fashion-text h3 {
+  font-size: 28px;
+  line-height: 1.4;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.fashion-text p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.fashion-text .date {
+  color: #666;
+}
+
+.view-more {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 16px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+
+.fashion-image {
+  flex: 1.4;
+}
+
+.fashion-image img {
+  width: 100%;
+  border-radius: 25px; /* Bo tròn 4 góc */
+  display: block;
+  object-fit: cover;
+}
