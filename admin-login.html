@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .login-header i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .login-body {
+            padding: 40px;
+            background: white;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+        }
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .alert-info {
+            background-color: #e7f3ff;
+            border-color: #b3d7ff;
+            color: #004085;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <i class="fas fa-user-shield"></i>
+            <h3 class="mb-0">Đăng nhập Admin</h3>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Quản trị hệ thống</p>
+        </div>
+        <div class="login-body">
+            <form id="admin-login-form">
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-user"></i> Tên đăng nhập</label>
+                    <input type="text" class="form-control" id="admin-username" placeholder="Nhập tên đăng nhập" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-lock"></i> Mật khẩu</label>
+                    <input type="password" class="form-control" id="admin-password" placeholder="Nhập mật khẩu" required>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me">
+                    <label class="form-check-label" for="remember-me">
+                        Ghi nhớ đăng nhập
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login w-100">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="index.html" class="text-muted">
+                    <i class="fas fa-home"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast thông báo -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="errorToast" class="toast" role="alert">
+            <div class="toast-header bg-danger text-white">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Lỗi</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEEErX_ybhvvi2W_unmIMnZTO4vEGdYE0",
+            authDomain: "webbanhang-cc2c7.firebaseapp.com",
+            projectId: "webbanhang-cc2c7",
+            storageBucket: "webbanhang-cc2c7.appspot.com",
+            messagingSenderId: "777103483355",
+            appId: "1:777103483355:web:cd03654e7cdad7114ec7fe",
+            measurementId: "G-B138HGZSQ3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Hàm hiển thị toast
+        function showToast(message) {
+            const toastEl = document.getElementById('errorToast');
+            toastEl.querySelector('.toast-body').textContent = message;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        // Kiểm tra nếu đã đăng nhập
+        const adminUser = JSON.parse(localStorage.getItem('adminUser'));
+        if (adminUser) {
+            if (confirm('Bạn đã đăng nhập với tài khoản: ' + adminUser.username + '\n\nVào trang quản trị?')) {
+                window.location.href = 'admin.html';
+            } else {
+                localStorage.removeItem('adminUser');
+            }
+        }
+
+        // Xử lý đăng nhập
+        document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('admin-username').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            const submitBtn = this.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+
+                // Lấy admin từ Firebase
+                const q = query(collection(db, "admins"), where("username", "==", username));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    showToast('Tài khoản không tồn tại!');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập';
+                    return;
+                }
+
+                let adminFound = null;
+                querySnapshot.forEach((doc) => {
+                    const admin = doc.data();
+                    if (admin.password === password) {
+                        adminFound = { id: doc.id, ...admin };
+                    }
+                });
+
+                if (adminFound) {
+                    // Lưu thông tin admin
+                    const adminData = {
+                        id: adminFound.id,
+                        username: adminFound.username,
+                        name: adminFound.name || 'Administrator',
+                        loginTime: new Date().toISOString(),
+                        rememberMe: rememberMe
+                    };
+
+                    localStorage.setItem('adminUser', JSON.stringify(adminData));
+                    window.location.href = 'admin.html';
+                } else {
+                    showToast('Mật khẩu không đúng!');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập';
+                }
+            } catch (error) {
+                console.error('Lỗi đăng nhập:', error);
+                showToast('Có lỗi xảy ra! Vui lòng thử lại.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập';
+            }
+        });
+    </script>
+</body>
+</html>

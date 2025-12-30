@@ -1,0 +1,12 @@
+{
+  "liveServer.settings.root": "../",
+  "liveServer.settings.file": "Ban-hang-main/index.html",
+  "liveServer.settings.CustomBrowser": "chrome",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.ts"
+  ]
+}

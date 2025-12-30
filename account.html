@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài khoản của tôi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <a href="index.html"><img src="./asset/img/logo (1).jpg" alt="" /></a>
+        </div>
+        <div class="menu">
+            <li><a href="./nam.html">NAM</a></li>
+            <li><a href="./nu.html">NỮ</a></li>
+            <li><a href="./tre-em.html">TRẺ EM</a></li>
+            <li><a href="./thong-tin.html">THÔNG TIN</a></li>
+        </div>
+        <div class="others">
+            <li>
+                <input placeholder="Tìm kiếm" type="text" /><i class="fas fa-search"></i>
+            </li>
+            <li>
+                <a class="icon-btn" href="admin-login.html" title="Quản trị"><i class="fas fa-user-shield"></i></a>
+            </li>
+            <li>
+                <a class="icon-btn" href="account.html"><i class="fas fa-user"></i></a>
+            </li>
+            <li>
+                <a class="icon-btn cart-icon" href="cart.html"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.7rem;display:none;">0</span></a>
+            </li>
+        </div>
+    </header>
+
+    <div class="container my-5" style="padding-top: 40px;">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Menu</div>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action active" data-section="info">Thông tin cá nhân</a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="addresses">Địa chỉ giao hàng</a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="orders">Đơn hàng của tôi</a>
+                        <a href="#" class="list-group-item list-group-item-action" data-section="password">Đổi mật khẩu</a>
+                        <button class="list-group-item list-group-item-action text-danger" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <!-- Thông tin cá nhân -->
+                <div class="card section-content" id="info-section">
+                    <div class="card-header">Thông tin cá nhân</div>
+                    <div class="card-body">
+                        <form id="info-form">
+                            <div class="mb-3">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" id="user-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="user-email" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="user-phone" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Địa chỉ giao hàng -->
+                <div class="card section-content" id="addresses-section" style="display:none">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Địa chỉ giao hàng</span>
+                        <button class="btn btn-sm btn-success" id="add-address-btn">Thêm địa chỉ</button>
+                    </div>
+                    <div class="card-body" id="addresses-list"></div>
+                </div>
+
+                <!-- Đơn hàng -->
+                <div class="card section-content" id="orders-section" style="display:none">
+                    <div class="card-header">Đơn hàng của tôi</div>
+                    <div class="card-body">
+                        <div id="orders-list"></div>
+                    </div>
+                </div>
+
+                <!-- Đổi mật khẩu -->
+                <div class="card section-content" id="password-section" style="display:none">
+                    <div class="card-header">Đổi mật khẩu</div>
+                    <div class="card-body">
+                        <form id="password-form">
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu hiện tại</label>
+                                <input type="password" class="form-control" id="current-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" class="form-control" id="new-password" required minlength="6">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Xác nhận mật khẩu mới</label>
+                                <input type="password" class="form-control" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal thêm địa chỉ -->
+    <div class="modal fade" id="addressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm địa chỉ giao hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="address-form">
+                        <div class="mb-3">
+                            <label class="form-label">Người nhận</label>
+                            <input type="text" class="form-control" id="address-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="address-phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea class="form-control" id="address-detail" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="address-default">
+                            <label class="form-check-label">Đặt làm địa chỉ mặc định</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu địa chỉ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./common.js"></script>
+    <script>
+        // Kiểm tra đăng nhập
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('currentUser')) || null;
+        }
+        function saveCurrentUser(user) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        }
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+            alert('Vui lòng đăng nhập để xem trang này!');
+            window.location.href = 'auth.html';
+            throw new Error('Not logged in'); // Dừng thực thi script
+        }
+
+        // Đăng xuất
+        document.getElementById('logout-btn').onclick = () => {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        };
+
+        // Chuyển đổi section
+        document.querySelectorAll('[data-section]').forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.list-group-item-action').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.section-content').forEach(s => s.style.display = 'none');
+                document.getElementById(this.dataset.section + '-section').style.display = 'block';
+            };
+        });
+
+        // Load thông tin cá nhân
+        document.getElementById('user-name').value = currentUser.name;
+        document.getElementById('user-email').value = currentUser.email;
+        document.getElementById('user-phone').value = currentUser.phone;
+
+        // Cập nhật thông tin
+        document.getElementById('info-form').onsubmit = function(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('user-name').value.trim();
+            currentUser.phone = document.getElementById('user-phone').value.trim();
+            
+            const users = getUsers();
+            const index = users.findIndex(u => u.id === currentUser.id);
+            users[index] = currentUser;
+            saveUsers(users);
+            saveCurrentUser(currentUser);
+            alert('Cập nhật thành công!');
+        };
+
+        // Quản lý địa chỉ
+        function renderAddresses() {
+            const list = document.getElementById('addresses-list');
+            if (!currentUser.addresses || currentUser.addresses.length === 0) {
+                list.innerHTML = '<p class="text-muted">Chưa có địa chỉ nào</p>';
+                return;
+            }
+            list.innerHTML = currentUser.addresses.map((addr, i) => `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h6>${addr.name} - ${addr.phone} ${addr.default ? '<span class="badge bg-primary">Mặc định</span>' : ''}</h6>
+                        <p class="mb-0">${addr.detail}</p>
+                        <button class="btn btn-sm btn-danger mt-2 delete-addr" data-index="${i}">Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.delete-addr').forEach(btn => {
+                btn.onclick = function() {
+                    currentUser.addresses.splice(this.dataset.index, 1);
+                    updateUser();
+                    renderAddresses();
+                };
+            });
+        }
+
+        document.getElementById('add-address-btn').onclick = () => {
+            const modal = new bootstrap.Modal(document.getElementById('addressModal'));
+            modal.show();
+        };
+
+        document.getElementById('address-form').onsubmit = function(e) {
+            e.preventDefault();
+            const addr = {
+                name: document.getElementById('address-name').value.trim(),
+                phone: document.getElementById('address-phone').value.trim(),
+                detail: document.getElementById('address-detail').value.trim(),
+                default: document.getElementById('address-default').checked
+            };
+            if (!currentUser.addresses) currentUser.addresses = [];
+            if (addr.default) {
+                currentUser.addresses.forEach(a => a.default = false);
+            }
+            currentUser.addresses.push(addr);
+            updateUser();
+            renderAddresses();
+            bootstrap.Modal.getInstance(document.getElementById('addressModal')).hide();
+            this.reset();
+        };
+
+        function updateUser() {
+            const users = getUsers();
+            const index = users.findIndex(u => u.id === currentUser.id);
+            users[index] = currentUser;
+            saveUsers(users);
+            saveCurrentUser(currentUser);
+        }
+
+        renderAddresses();
+
+        // Đơn hàng của tôi
+        function getStatusBadge(status) {
+            const statusMap = {
+                'pending': { text: 'Chờ xử lý', class: 'bg-warning' },
+                'processing': { text: 'Đang xử lý', class: 'bg-info' },
+                'shipping': { text: 'Đang giao hàng', class: 'bg-primary' },
+                'completed': { text: 'Hoàn thành', class: 'bg-success' },
+                'cancelled': { text: 'Đã hủy', class: 'bg-danger' }
+            };
+            const s = statusMap[status] || { text: 'Chờ xử lý', class: 'bg-warning' };
+            return `<span class="badge ${s.class}">${s.text}</span>`;
+        }
+
+        function renderOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const myOrders = orders.filter(o => o.userId === currentUser.id);
+            const list = document.getElementById('orders-list');
+            if (myOrders.length === 0) {
+                list.innerHTML = '<p class="text-muted">Chưa có đơn hàng nào</p>';
+                return;
+            }
+            list.innerHTML = myOrders.map(o => `
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Đơn hàng #${o.id.toString().slice(-6)}</span>
+                        ${getStatusBadge(o.status || 'pending')}
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Người nhận:</strong> ${o.customerName}</p>
+                        <p><strong>SĐT:</strong> ${o.customerPhone}</p>
+                        <p><strong>Địa chỉ:</strong> ${o.customerAddress}</p>
+                        <p><strong>Ngày đặt:</strong> ${new Date(o.createdAt).toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold">${o.total.toLocaleString()}$</span></p>
+                        <div><strong>Sản phẩm:</strong></div>
+                        <ul class="list-unstyled">
+                            ${o.cart.map(item => `
+                                <li class="mb-1">
+                                    - ${item.title || item.name} 
+                                    ${item.selectedSize ? `<span class="badge bg-secondary">Size: ${item.selectedSize}</span>` : ''}
+                                    x${item.quantity} 
+                                    <span class="text-muted">(${(item.price * item.quantity).toLocaleString()}$)</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+        renderOrders();
+
+        // Đổi mật khẩu
+        document.getElementById('password-form').onsubmit = function(e) {
+            e.preventDefault();
+            const current = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+
+            if (current !== currentUser.password) {
+                alert('Mật khẩu hiện tại không đúng!');
+                return;
+            }
+            if (newPass !== confirm) {
+                alert('Mật khẩu mới không khớp!');
+                return;
+            }
+            currentUser.password = newPass;
+            updateUser();
+            alert('Đổi mật khẩu thành công!');
+            this.reset();
+        };
+    </script>
+</body>
+</html>

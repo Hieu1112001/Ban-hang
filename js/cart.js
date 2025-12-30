@@ -6,7 +6,7 @@ function showToast(id, message) {
   toast.show();
 }
 function renderCart() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cart = getCart();
   console.log(cart);
 
   const cartList = document.querySelector(".cart-list");
@@ -52,9 +52,9 @@ function renderCart() {
   document.querySelectorAll(".remove-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
       const id = this.getAttribute("data-id");
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let cart = getCart();
       cart = cart.filter((item) => item.id != id);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      saveCart(cart);
       renderCart();
     });
   });
@@ -69,7 +69,7 @@ document.querySelectorAll(".cart-icon").forEach((icon) => {
 });
 
 document.getElementById("checkout-btn").addEventListener("click", function () {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cart = getCart();
   if (cart.length === 0) {
     alert("Giỏ hàng trống!");
     return;

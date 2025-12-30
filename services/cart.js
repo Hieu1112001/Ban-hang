@@ -11,6 +11,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
+// Thêm hàm getCurrentUser
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem('currentUser')) || null;
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyCEEErX_ybhvvi2W_unmIMnZTO4vEGdYE0",
   authDomain: "webbanhang-cc2c7.firebaseapp.com",
@@ -32,7 +37,9 @@ export async function getCart({ name, phone, address }) {
     console.log('chạy vào đây');
     console.log(name, phone, address);
     
-  const cartsJson = localStorage.getItem("cart");
+  const user = getCurrentUser();
+  const cartKey = user ? `cart_${user.id}` : 'cart_guest';
+  const cartsJson = localStorage.getItem(cartKey);
   let products = [];
 
   if (cartsJson) {

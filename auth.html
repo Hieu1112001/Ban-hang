@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập / Đăng ký</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- Đăng nhập -->
+                <div class="card mb-4" id="login-section">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Đăng nhập</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="login-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="login-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <a href="#" id="show-register">Chưa có tài khoản? Đăng ký</a> | 
+                            <a href="#" id="show-forgot">Quên mật khẩu?</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đăng ký -->
+                <div class="card mb-4" id="register-section" style="display:none">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Đăng ký tài khoản</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="register-form">
+                            <div class="mb-3">
+                                <label class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" id="register-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="register-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="register-phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="register-password" required minlength="6">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Xác nhận mật khẩu</label>
+                                <input type="password" class="form-control" id="register-confirm" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Đăng ký</button>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <a href="#" id="show-login">Đã có tài khoản? Đăng nhập</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quên mật khẩu -->
+                <div class="card" id="forgot-section" style="display:none">
+                    <div class="card-header bg-warning">
+                        <h4 class="mb-0">Quên mật khẩu</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="forgot-form">
+                            <div class="mb-3">
+                                <label class="form-label">Email đã đăng ký</label>
+                                <input type="email" class="form-control" id="forgot-email" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100">Lấy lại mật khẩu</button>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <a href="#" id="back-login">Quay lại đăng nhập</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEEErX_ybhvvi2W_unmIMnZTO4vEGdYE0",
+            authDomain: "webbanhang-cc2c7.firebaseapp.com",
+            projectId: "webbanhang-cc2c7",
+            storageBucket: "webbanhang-cc2c7.appspot.com",
+            messagingSenderId: "777103483355",
+            appId: "1:777103483355:web:cd03654e7cdad7114ec7fe",
+            measurementId: "G-B138HGZSQ3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Quản lý người dùng với Firestore
+        async function getUsers() {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                users.push({ id: doc.id, ...doc.data() });
+            });
+            return users;
+        }
+        
+        async function saveUser(user) {
+            const docRef = await addDoc(collection(db, "users"), user);
+            return docRef.id;
+        }
+        
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('currentUser')) || null;
+        }
+        
+        function setCurrentUser(user) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+
+        // Chuyển đổi giữa các form
+        document.getElementById('show-register').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'block';
+            document.getElementById('forgot-section').style.display = 'none';
+        };
+        document.getElementById('show-login').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('forgot-section').style.display = 'none';
+        };
+        document.getElementById('show-forgot').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('forgot-section').style.display = 'block';
+        };
+        document.getElementById('back-login').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('forgot-section').style.display = 'none';
+        };
+
+        // Đăng ký
+        document.getElementById('register-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const phone = document.getElementById('register-phone').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+
+            if (password !== confirm) {
+                alert('Mật khẩu xác nhận không khớp!');
+                return;
+            }
+
+            try {
+                const users = await getUsers();
+                if (users.find(u => u.email === email)) {
+                    alert('Email đã được đăng ký!');
+                    return;
+                }
+
+                const newUser = { 
+                    name, 
+                    email, 
+                    phone, 
+                    password, 
+                    addresses: [],
+                    createdAt: new Date().toISOString()
+                };
+                
+                await saveUser(newUser);
+                alert('Đăng ký thành công! Vui lòng đăng nhập.');
+                document.getElementById('show-login').click();
+                this.reset();
+            } catch (error) {
+                console.error('Lỗi đăng ký:', error);
+                alert('Đăng ký thất bại! Vui lòng thử lại.');
+            }
+        };
+
+        // Đăng nhập
+        document.getElementById('login-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const users = await getUsers();
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    setCurrentUser(user);
+                    alert('Đăng nhập thành công!');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Email hoặc mật khẩu không đúng!');
+                }
+            } catch (error) {
+                console.error('Lỗi đăng nhập:', error);
+                alert('Đăng nhập thất bại! Vui lòng thử lại.');
+            }
+        };
+
+        // Quên mật khẩu
+        document.getElementById('forgot-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value.trim();
+            
+            try {
+                const users = await getUsers();
+                const user = users.find(u => u.email === email);
+
+                if (user) {
+                    alert(`Mật khẩu của bạn là: ${user.password}\n(Trong thực tế sẽ gửi qua email)`);
+                } else {
+                    alert('Email không tồn tại trong hệ thống!');
+                }
+            } catch (error) {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra! Vui lòng thử lại.');
+            }
+        };
+
+        // Kiểm tra nếu đã đăng nhập
+        if (getCurrentUser()) {
+            if (confirm('Bạn đã đăng nhập. Quay về trang chủ?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+    <script src="./common.js"></script>
+</body>
+</html>
